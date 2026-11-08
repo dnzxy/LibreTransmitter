@@ -16,6 +16,9 @@ extension UserDefaults {
         case mmAlertNoSensorDetected = "com.loopkit.libreNoSensorDetected"
         case mmAlertSensorSoonExpire = "com.loopkit.libreAlertSensorSoonExpire"
         case mmDangerMode = "com.loopkit.libreDangerModeActivated"
+        case activeAlertConditions = "com.loopkit.libreActiveAlertConditions"
+        case expiryAlertsSensor = "com.loopkit.libreExpiryAlertsSensor"
+        case sensorExpiresAt = "com.loopkit.libreSensorExpiresAt"
     }
    
     public func optionalBool(forKey defaultName: String) -> Bool? {
@@ -77,6 +80,33 @@ extension UserDefaults {
         }
         set {
             set(newValue, forKey: Key.mmDangerMode.rawValue)
+        }
+    }
+
+    var activeAlertConditions: [String] {
+        get {
+            stringArray(forKey: Key.activeAlertConditions.rawValue) ?? []
+        }
+        set {
+            set(newValue, forKey: Key.activeAlertConditions.rawValue)
+        }
+    }
+
+    var expiryAlertsSensor: String? {
+        get {
+            string(forKey: Key.expiryAlertsSensor.rawValue)
+        }
+        set {
+            set(newValue, forKey: Key.expiryAlertsSensor.rawValue)
+        }
+    }
+
+    var sensorExpiresAt: Date? {
+        get {
+            object(forKey: Key.sensorExpiresAt.rawValue) as? Date
+        }
+        set {
+            set(newValue, forKey: Key.sensorExpiresAt.rawValue)
         }
     }
 

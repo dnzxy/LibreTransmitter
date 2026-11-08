@@ -15,7 +15,12 @@ import CoreBluetooth
 import os.log
 
 open class LibreTransmitterManagerV3: CGMManager, LibreTransmitterDelegate {
-    public var inSignalLoss: Bool = false
+    public var inSignalLoss: Bool {
+        guard let latestBackfill else {
+            return false
+        }
+        return latestBackfill.startDate.timeIntervalSinceNow < -TimeInterval.minutes(15)
+    }
     
     public var isInoperable: Bool {
         cgmManagerStatus.isInoperable
@@ -290,6 +295,10 @@ open class LibreTransmitterManagerV3: CGMManager, LibreTransmitterDelegate {
     var lastDirectUpdate: Date?
 
     internal var countTimesWithoutData: Int = 0
+
+    // Conditions behind the alerts and status highlight, persisted so each alert is issued once per occurrence
+    internal let activeAlertConditions = Locked(Set(UserDefaults.standard.activeAlertConditions.compactMap(LibreTransmitterAlert.init(rawValue:))))
+    internal let lastSensorState = Locked<SensorState?>(nil)
 
     open var pairingService: SensorPairingProtocol {
         #if targetEnvironment(simulator)

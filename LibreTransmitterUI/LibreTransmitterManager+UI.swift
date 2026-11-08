@@ -17,6 +17,12 @@ struct LibreLifecycleProgress: DeviceLifecycleProgress {
     var progressState: LoopKit.DeviceLifecycleProgressState
 }
 
+struct LibreStatusHighlight: DeviceStatusHighlight {
+    var localizedMessage: String
+    var imageName: String
+    var state: DeviceStatusHighlightState
+}
+
 extension LibreTransmitterManagerV3: @retroactive CGMManagerUI {
 
     public var cgmStatusBadge: DeviceStatusBadge? {
@@ -95,7 +101,64 @@ extension LibreTransmitterManagerV3: @retroactive CGMManagerUI {
     }
 
     public var cgmStatusHighlight: DeviceStatusHighlight? {
-        nil
+        if hasAlertCondition(.noTransmitterSelected) {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("No\nTransmitter", comment: "Status highlight text when no transmitter or sensor is selected"),
+                imageName: "exclamationmark.circle.fill",
+                state: .warning)
+        }
+
+        if hasAlertCondition(.sensorFailed) {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("Sensor\nFailed", comment: "Status highlight text for sensor failed"),
+                imageName: "exclamationmark.circle.fill",
+                state: .critical)
+        }
+
+        if hasAlertCondition(.sensorInvalid) {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("Invalid\nSensor", comment: "Status highlight text for a sensor that is not started or not supported"),
+                imageName: "exclamationmark.circle.fill",
+                state: .warning)
+        }
+
+        if isSensorExpired {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("Sensor\nExpired", comment: "Status highlight text for sensor expired"),
+                imageName: "clock",
+                state: .normalCGM)
+        }
+
+        if hasAlertCondition(.sensorNotDetected) {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("No Sensor\nFound", comment: "Status highlight text when the transmitter finds no sensor"),
+                imageName: "exclamationmark.circle.fill",
+                state: .warning)
+        }
+
+        // No readings are expected while the sensor warms up
+        if inSignalLoss && !isSensorWarmingUp {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("Signal\nLoss", comment: "Status highlight text for signal loss"),
+                imageName: "exclamationmark.circle.fill",
+                state: .warning)
+        }
+
+        if hasAlertCondition(.transmitterBatteryLow) {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("Low\nBattery", comment: "Status highlight text for low transmitter battery"),
+                imageName: "battery.25",
+                state: .warning)
+        }
+
+        if isSensorWarmingUp {
+            return LibreStatusHighlight(
+                localizedMessage: LocalizedString("Sensor\nWarmup", comment: "Status highlight text for sensor warmup"),
+                imageName: "clock",
+                state: .normalCGM)
+        }
+
+        return nil
     }
 
     public var cgmLifecycleProgress: DeviceLifecycleProgress? {

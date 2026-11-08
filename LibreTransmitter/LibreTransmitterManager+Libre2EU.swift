@@ -65,9 +65,15 @@ extension LibreTransmitterManagerV3 {
             return
         }
 
+        // A direct reading means the sensor works; it reports no state of its own
+        setSensorState(nil)
+        for alert in LibreTransmitterAlert.allCases where !LibreTransmitterAlert.sessionTimed.contains(alert) {
+            setAlertCondition(alert, isActive: false)
+        }
+
         if sensor.maxAge > 0 {
             let minutesLeft = Double(sensor.maxAge - bleData.age)
-            NotificationHelper.sendSensorExpireAlertIfNeeded(minutesLeft: minutesLeft)
+            scheduleExpiryAlertsIfNeeded(sensorId: sensor.uuid.hexEncodedString(), expiresAt: now + TimeInterval(minutes: minutesLeft))
 
         }
         

@@ -51,6 +51,7 @@
 		27850D0E25672CA60020D109 /* ConcreteGlucoseDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27850D0B25672CA60020D109 /* ConcreteGlucoseDisplayable.swift */; };
 		27850D1025672CA60020D109 /* LibreGlucose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27850D0C25672CA60020D109 /* LibreGlucose.swift */; };
 		27850D1225672CA60020D109 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27850D0D25672CA60020D109 /* NotificationHelper.swift */; };
+		A1E7B2C3D4E5F60718293A4B /* LibreTransmitterAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E7B2C3D4E5F60718293A4C /* LibreTransmitterAlert.swift */; };
 		27850D4E25672DFB0020D109 /* LibreTransmitterSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27850D2425672DFB0020D109 /* LibreTransmitterSetupViewController.swift */; };
 		27850D6325672DFB0020D109 /* miaomiao-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 27850D4025672DFB0020D109 /* miaomiao-small.png */; };
 		27850D6425672DFB0020D109 /* libresensor.png in Resources */ = {isa = PBXBuildFile; fileRef = 27850D4125672DFB0020D109 /* libresensor.png */; };
@@ -247,6 +248,7 @@
 		27850D0B25672CA60020D109 /* ConcreteGlucoseDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteGlucoseDisplayable.swift; sourceTree = "<group>"; };
 		27850D0C25672CA60020D109 /* LibreGlucose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibreGlucose.swift; sourceTree = "<group>"; };
 		27850D0D25672CA60020D109 /* NotificationHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
+		A1E7B2C3D4E5F60718293A4C /* LibreTransmitterAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibreTransmitterAlert.swift; sourceTree = "<group>"; };
 		27850D2425672DFB0020D109 /* LibreTransmitterSetupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibreTransmitterSetupViewController.swift; sourceTree = "<group>"; };
 		27850D4025672DFB0020D109 /* miaomiao-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "miaomiao-small.png"; sourceTree = "<group>"; };
 		27850D4125672DFB0020D109 /* libresensor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = libresensor.png; sourceTree = "<group>"; };
@@ -570,6 +572,7 @@
 				27ED67B62698EEEF003E5DAB /* Observables */,
 				27850D0B25672CA60020D109 /* ConcreteGlucoseDisplayable.swift */,
 				27850D0D25672CA60020D109 /* NotificationHelper.swift */,
+				A1E7B2C3D4E5F60718293A4C /* LibreTransmitterAlert.swift */,
 				27850D0C25672CA60020D109 /* LibreGlucose.swift */,
 				B66D1F722E6A813000471149 /* Localizable.xcstrings */,
 				43A8EC9C210E68CE00A81379 /* LibreTransmitterManagerV3.swift */,
@@ -950,6 +953,7 @@
 				C1AF1D122A4BC18400F46A26 /* MockSensorData.swift in Sources */,
 				27850CE725672C0C0020D109 /* DataExtensions.swift in Sources */,
 				27850D1225672CA60020D109 /* NotificationHelper.swift in Sources */,
+				A1E7B2C3D4E5F60718293A4B /* LibreTransmitterAlert.swift in Sources */,
 				27850CF325672C0C0020D109 /* UserDefaults+GlucoseSettings.swift in Sources */,
 				27850CE925672C0C0020D109 /* TimeIntervalExtensions.swift in Sources */,
 				C1D819B32AC9B60100C9416E /* LimitedQueue.swift in Sources */,

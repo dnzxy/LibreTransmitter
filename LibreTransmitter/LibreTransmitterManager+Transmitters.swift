@@ -13,7 +13,7 @@ import LoopKit
 extension LibreTransmitterManagerV3 {
 
     public func noLibreTransmitterSelected() {
-        NotificationHelper.sendNoTransmitterSelectedNotification()
+        setAlertCondition(.noTransmitterSelected, isActive: true)
     }
 
     public func libreTransmitterDidUpdate(with sensorData: SensorData, and Device: LibreTransmitterMetadata) {
@@ -21,7 +21,13 @@ extension LibreTransmitterManagerV3 {
         self.logger.debug("got sensordata: \(String(describing: sensorData)), bytescount: \( sensorData.bytes.count), bytes: \(sensorData.bytes)")
         var sensorData = sensorData
 
-        NotificationHelper.sendLowBatteryNotificationIfNeeded(device: Device)
+        setAlertCondition(.noTransmitterSelected, isActive: false)
+        setAlertCondition(.sensorNotDetected, isActive: false)
+        if let battery = Device.battery {
+            setAlertCondition(.transmitterBatteryLow,
+                              isActive: battery <= LibreTransmitterAlert.lowBatteryPercent,
+                              isEnabled: UserDefaults.standard.mmAlertLowBatteryWarning)
+        }
         self.setObservables(sensorData: nil, bleData: nil, metaData: Device)
 
          if !sensorData.isLikelyLibre1FRAM {
@@ -44,7 +50,6 @@ extension LibreTransmitterManagerV3 {
 
         tryPersistSensorData(with: sensorData)
 
-        NotificationHelper.sendInvalidSensorNotificationIfNeeded(sensorData: sensorData)
         NotificationHelper.sendInvalidChecksumIfDeveloper(sensorData)
 
         guard sensorData.hasValidCRCs else {
@@ -56,7 +61,7 @@ extension LibreTransmitterManagerV3 {
             return
         }
 
-        NotificationHelper.sendSensorExpireAlertIfNeeded(sensorData: sensorData)
+        updateSensorAlerts(for: sensorData)
 
         guard sensorData.state == .ready || sensorData.state == .starting else {
             logger.debug("got sensordata with valid crcs, but sensor is either expired or failed")
@@ -250,16 +255,37 @@ extension LibreTransmitterManagerV3 {
         case .newSensor:
             //we can't be sure of the activation datetime for the new sensor here
             logger.debug("New libresensor detected")
-            NotificationHelper.sendSensorChangeNotificationIfNeeded()
+            setAlertCondition(.sensorNotDetected, isActive: false)
+            setAlertCondition(.sensorChanged, isActive: true, isEnabled: UserDefaults.standard.mmAlertNewSensorDetected)
         case .noSensor:
             logger.debug("No libresensor detected")
-            NotificationHelper.sendSensorNotDetectedNotificationIfNeeded(noSensor: true)
+            setAlertCondition(.sensorNotDetected, isActive: true, isEnabled: UserDefaults.standard.mmAlertNoSensorDetected)
         default:
             // we don't care about the rest!
             break
         }
 
         return
+    }
+
+    /// Raises or clears the sensor-state alerts from a reading with valid checksums.
+    private func updateSensorAlerts(for sensorData: SensorData) {
+        let state = sensorData.state
+        let isFailed = state == .failure
+        let isUnreadable = !sensorData.isLikelyLibre1FRAM || state == .notYetStarted || state == .unknown
+        let isEnabled = UserDefaults.standard.mmAlertInvalidSensorDetected
+
+        setSensorState(state)
+        setAlertCondition(.sensorFailed, isActive: isFailed, isEnabled: isEnabled)
+        setAlertCondition(.sensorInvalid, isActive: isUnreadable && !isFailed, isEnabled: isEnabled)
+        if state == .ready {
+            setAlertCondition(.sensorChanged, isActive: false)
+        }
+
+        if sensorData.maxMinutesWearTime > 0 {
+            scheduleExpiryAlertsIfNeeded(sensorId: sensorData.uuid.hexEncodedString(),
+                                         expiresAt: Date() + TimeInterval(minutes: Double(sensorData.minutesLeft)))
+        }
     }
 
     func tryPersistSensorData(with sensorData: SensorData) {
