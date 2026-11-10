@@ -121,9 +121,9 @@ public enum LibreTransmitterAlert: String, CaseIterable {
 // MARK: - Alerts
 extension LibreTransmitterManagerV3 {
 
-    public static var issuableAlerts: [IssuableAlert] {
+    public static var alertCatalog: [AlertCatalogEntry] {
         LibreTransmitterAlert.allCases.map {
-            IssuableAlert(identifier: $0.rawValue, interruptionLevel: $0.interruptionLevel, title: $0.title)
+            AlertCatalogEntry(identifier: $0.rawValue, interruptionLevel: $0.interruptionLevel, title: $0.title)
         }
     }
 
